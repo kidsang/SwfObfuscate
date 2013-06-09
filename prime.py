@@ -122,11 +122,11 @@ def WriteU30(val):
 	Variable-length encoded 30-bit unsigned integer value
 	'''
 	data = ''
-	while val >= 0x3F:
-		lo = (val & 0x3F) | 0x80
+	while val >= 0x7F:
+		lo = (val & 0x7F) | 0x80
 		val = val >> 7
 		data += struct.pack('B', lo)
-	lo = val & 0x3F
+	lo = val & 0x7F
 	data += struct.pack('B', lo)
 	return data
 

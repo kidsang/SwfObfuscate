@@ -1,5 +1,11 @@
 from prime import *
 
+def FormatLineNo(cur):
+	base = 16
+	row = cur / base
+	col = cur % base
+	return 'row:%x, col:%x' %(row, col)
+
 class ABCFile():
 
 	def unpack(self, data, cur):

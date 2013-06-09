@@ -1,4 +1,6 @@
 import struct
+import math
+from bitarray import bitarray
 
 def ReadU8(data, cur):
 	'''
@@ -179,3 +181,49 @@ def WriteTagHeader(tagCode, tagLength):
 		tagCodeAndLength |= tagLength
 		data += WriteU16(tagCodeAndLength)
 	return data
+
+def ReadRect(data, cur):
+	'''
+	return: next, rect[left, top, right, bottom]
+	'''
+	nbits = struct.unpack('>B', data[cur])[0]
+	nbits = nbits >> 3
+	nbytes = (nbits * 4 + 5) / 8.0
+	nbytes = int(math.ceil(nbytes))
+	next = cur + nbytes
+	a = bitarray(endian='big')
+	a.frombytes(data[cur:next])
+	rect = [] 
+	for i in range(4):
+		begin = 5 + i * nbits
+		end = begin + nbits
+		num = a[begin:end]
+		num = int(num.to01(), 2)
+		rect.append(num)
+	return next, rect
+
+def WriteRect(rect):
+	'''
+	rect:[left, top, right, bottom]
+	'''
+	mx = max(rect)
+	mxBits = 1
+	while mx > 0:
+		mx >>= 1
+		mxBits += 1
+
+	data = bitarray(bin(mxBits + 0x80)[2:])
+	data = data[-5:]
+	for i in range(4):
+		temp = bitarray(bin(rect[i])[2:])
+		l = len(temp)
+		if l < mxBits:
+			temp = bitarray('0' * (mxBits - l)) + temp
+		data += temp
+
+	l = 5 + 4 * mxBits
+	if l & 0x7:
+		align = ((l >> 3 + 1) << 3) - l
+		data += bitarray('0' * align)
+
+	return data.tobytes()

@@ -25,6 +25,7 @@ def FormatLineNo(cur):
 
 def ReadHeader(abc):
 	out = '\n'
+	out += 'tag_code: ' + str(abc.tagCode) + '\n'
 	out += 'flags: ' + str(abc.flags) + '\n'
 	out += 'file_name: ' + str(abc.name) + '\n'
 	out += 'major_version: ' + str(abc.major_version) + '\n'

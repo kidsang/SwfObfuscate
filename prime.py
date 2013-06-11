@@ -95,8 +95,7 @@ def ReadCString(data, cur):
 	next = cur
 	while data[next] != b'\x00':
 		next += 1
-	next += 1
-	return next, data[cur:next] 
+	return next + 1, data[cur:next] 
 
 def WriteU8(val):
 	'''
@@ -153,6 +152,7 @@ def WriteCString(val):
 	Variable-length UTF-8 encoded string end with 0
 	'''
 	data = struct.pack(str(len(val)) + 's', val)
+	data += b'\x00'
 	return data
 
 def ReadTagHeader(data, cur):

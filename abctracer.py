@@ -1,3 +1,4 @@
+from abcfile import *
 
 class ABCTracer():
 
@@ -16,12 +17,6 @@ class ABCTracer():
 		out += ReadScriptInfo(abc)
 		out += ReadMethodBodyInfo(abc)
 		return out
-
-def FormatLineNo(cur):
-	base = 16
-	row = cur / base
-	col = cur % base
-	return 'row:%x, col:%x' %(row, col)
 
 def ReadHeader(abc):
 	out = '\n'
@@ -67,7 +62,7 @@ def ReadConstPool(abc):
 	for i in range(1, pool.namespace_count):
 		ns = pool.namespace[i]
 		nss[i] = strings[ns.name]
-		out += pre + str(i) + ': <kind:' + ns.kind_map[ns.kind] 
+		out += pre + str(i) + ': <kind:' + namespace_info.kind_map[ns.kind] 
 		out += ', name:' + strings[ns.name] 
 		out += ', name: ' + str(ns.name) + '>\n'
 	pre = 4 * ' '
@@ -97,7 +92,7 @@ def ReadConstPool(abc):
 	for i in range(1, pool.multiname_count):
 		mn = pool.multiname[i]
 		mndata = mn.data
-		out += pre + str(i) + ': <kind:' + mn.kind_map[mn.kind]
+		out += pre + str(i) + ': <kind:' + multiname_info.kind_map[mn.kind]
 		if mn.kind in (0x07, 0x0D):
 			out += ', ns:' + nss[mndata.ns]
 			out += ', ns:' + str(mndata.ns)
@@ -146,7 +141,7 @@ def GetNamespace(abc, i):
 	if i == 0:
 		return str(ns)
 
-	out = '<kind:' + ns.kind_map[ns.kind] 
+	out = '<kind:' + namespace_info.kind_map[ns.kind] 
 	out += ', name:' + GetString(abc, ns.name) + '>'
 	return out
 
@@ -180,7 +175,7 @@ def GetMultiname(abc, i):
 		out += ', ns_set:' + GetNsSet(abc, mndata.ns_set)
 	elif mn.kind in (0x1B, 0x1C):
 		out += 'ns_set:' + GetNsSet(abc, mndata.ns_set)
-	out += ', kind:' + mn.kind_map[mn.kind] + '>'
+	out += ', kind:' + multiname_info.kind_map[mn.kind] + '>'
 	return out
 
 def GetValByType(abc, i, t):
@@ -229,7 +224,7 @@ def ReadMethodInfo(abc):
 			for j in range(options.option_count):
 				option = options.option[j]
 				out += pre + 'val:' + GetValByType(abc, option.val, option.kind) + ', '
-				out += 'kind:' + option.kind_map[option.kind] + '\n'
+				out += 'kind:' + option_detail.kind_map[option.kind] + '\n'
 			pre = 8 * ' '
 			out += pre + ']\n'
 		if method.flags & 0x80:
@@ -279,7 +274,7 @@ def ReadTraits(abc, trait_count, traits, indent):
 		pre = (indent + 4) * ' '
 		trait = traits[j]
 		out += pre + 'name:' + GetMultiname(abc, trait.name) + '\n'
-		out += pre + 'kind:' + trait.kind_map[trait.kind_kind] + '\n'
+		out += pre + 'kind:' + traits_info.kind_map[trait.kind_kind] + '\n'
 
 		out += pre + 'data:' + '\n'
 		pre = (indent + 8) * ' '

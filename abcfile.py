@@ -201,16 +201,15 @@ class string_info():
 
 class namespace_info():
 
-	def __init__(self):
-		self.kind_map = {
-			0x08:'NameSpace',
-			0x16:'PackageNamespace',
-			0x17:'PackageInternalNs',
-			0x18:'ProtectedNamespace',
-			0x19:'ExplicitNamespace',
-			0x1A:'StaticProtectedNs',
-			0x05:'PrivateNs',
-		}
+	kind_map = {
+		0x08:'NameSpace',
+		0x16:'PackageNamespace',
+		0x17:'PackageInternalNs',
+		0x18:'ProtectedNamespace',
+		0x19:'ExplicitNamespace',
+		0x1A:'StaticProtectedNs',
+		0x05:'PrivateNs',
+	}
 
 	def unpack(self, data, cur):
 		cur, self.kind = ReadU8(data, cur)
@@ -242,19 +241,18 @@ class ns_set_info():
 
 class multiname_info():
 
-	def __init__(self):
-		self.kind_map = {
-			0x07:'QName',
-			0x0D:'QNameA',
-			0x0F:'RTQName',
-			0x10:'RTQNameA',
-			0x11:'RTQNameL',
-			0x12:'RTQNameLA',
-			0x09:'Multiname',
-			0x0E:'MultinameA',
-			0x1B:'MultinameL',
-			0x1C:'MultinameLA',
-		}
+	kind_map = {
+		0x07:'QName',
+		0x0D:'QNameA',
+		0x0F:'RTQName',
+		0x10:'RTQNameA',
+		0x11:'RTQNameL',
+		0x12:'RTQNameLA',
+		0x09:'Multiname',
+		0x0E:'MultinameA',
+		0x1B:'MultinameL',
+		0x1C:'MultinameLA',
+	}
 
 	class QName():
 		def unpack(self, data, cur):
@@ -382,24 +380,23 @@ class option_info():
 
 class option_detail():
 
-	def __init__(self):
-		self.kind_map = {
-			0x03:'Int',
-			0x04:'UInt',
-			0x06:'Double',
-			0x01:'Utf8',
-			0x0B:'True',
-			0x0A:'False',
-			0x0C:'Null',
-			0x00:'Undefined',
-			0x08:'Namespace',
-			0x16:'PackageNamespace',
-			0x17:'PackageInternalNs',
-			0x18:'ProtectedNamespace',
-			0x19:'ExplicitNamespace',
-			0x1A:'StaticProtectedNs',
-			0x05:'PrivateNs'
-		}
+	kind_map = {
+		0x03:'Int',
+		0x04:'UInt',
+		0x06:'Double',
+		0x01:'Utf8',
+		0x0B:'True',
+		0x0A:'False',
+		0x0C:'Null',
+		0x00:'Undefined',
+		0x08:'Namespace',
+		0x16:'PackageNamespace',
+		0x17:'PackageInternalNs',
+		0x18:'ProtectedNamespace',
+		0x19:'ExplicitNamespace',
+		0x1A:'StaticProtectedNs',
+		0x05:'PrivateNs'
+	}
 
 	def unpack(self, data, cur):
 		cur, self.val = ReadU30(data, cur)
@@ -485,22 +482,21 @@ class instance_info():
 
 class traits_info():
 
-	def __init__(self):
-		self.kind_map = {
-			0:'Slot', 
-			1:'Method', 
-			2:'Readter', 
-			3:'Setter', 
-			4:'Class', 
-			5:'Function', 
-			6:'Const' 
-		}
+	kind_map = {
+		0:'Slot', 
+		1:'Method', 
+		2:'Readter', 
+		3:'Setter', 
+		4:'Class', 
+		5:'Function', 
+		6:'Const' 
+	}
 
-		self.attr_map = {
-			1:'Final', 
-			2:'Override', 
-			4:'Metadata' 
-		}
+	attr_map = {
+		1:'Final', 
+		2:'Override', 
+		4:'Metadata' 
+	}
 
 	class SlotT():
 		def unpack(self, data, cur):

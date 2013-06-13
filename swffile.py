@@ -7,7 +7,7 @@ class SWFFile():
 	def unpack(self, data):
 		self.signature = data[:3]
 		cur, self.version = ReadU8(data, 3)
-		cur, file_length = ReadU32(data, 4)
+		cur, file_length = ReadUI32(data, 4)
 		data = data[8:]
 
 		if self.signature == 'CWS':
@@ -42,7 +42,7 @@ class SWFFile():
 		data += WriteU16(self.frame_rate)
 		data += WriteU16(self.frame_count)
 
-		for i in range(len(self.trunks)):
+		for i in xrange(len(self.trunks)):
 			trunk = self.trunks[i]
 			if getattr(trunk, 'pack', None):
 				data += trunk.pack()
@@ -56,7 +56,7 @@ class SWFFile():
 
 		header = self.signature
 		header += WriteU8(self.version)
-		header += WriteU32(file_length)
+		header += WriteUI32(file_length)
 		data =  header + data
 
 		return data

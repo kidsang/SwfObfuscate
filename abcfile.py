@@ -11,7 +11,7 @@ class ABCFile():
 	def unpack(self, data, cur):
 
 		cur, self.tagCode, length = ReadTagHeader(data, cur)
-		cur, self.flags = ReadU32(data, cur)
+		cur, self.flags = ReadUI32(data, cur)
 		cur, self.name = ReadCString(data, cur)
 		cur, self.minor_version = ReadU16(data, cur)
 		cur, self.major_version = ReadU16(data, cur)
@@ -21,40 +21,40 @@ class ABCFile():
 
 		cur, self.method_count = ReadU30(data, cur)
 		self.method = []
-		for i in range(self.method_count):
+		for i in xrange(self.method_count):
 			method = method_info()
 			cur = method.unpack(data, cur)
 			self.method.append(method)
 
 		cur, self.metadata_count = ReadU30(data, cur)
 		self.metadata = []
-		for i in range(self.metadata_count):
+		for i in xrange(self.metadata_count):
 			metadata = metadata_info()
 			cur = metadata.unpack(data, cur)
 			self.metadata.append(metadata)
 
 		cur, self.class_count = ReadU30(data, cur)
 		self.instance = []
-		for i in range(self.class_count):
+		for i in xrange(self.class_count):
 			instance = instance_info()
 			cur = instance.unpack(data, cur)
 			self.instance.append(instance)
 		self.cls = []
-		for i in range(self.class_count):
+		for i in xrange(self.class_count):
 			cls = class_info()
 			cur = cls.unpack(data, cur)
 			self.cls.append(cls)
 
 		cur, self.script_count = ReadU30(data, cur)
 		self.script = []
-		for i in range(self.script_count):
+		for i in xrange(self.script_count):
 			script = script_info()
 			cur = script.unpack(data, cur)
 			self.script.append(script)
 
 		cur, self.method_body_count = ReadU30(data, cur)
 		self.method_body = []
-		for i in range(self.method_body_count):
+		for i in xrange(self.method_body_count):
 			method_body = method_body_info()
 			cur = method_body.unpack(data, cur)
 			self.method_body.append(method_body)
@@ -63,7 +63,7 @@ class ABCFile():
 
 	def pack(self):
 		data = ''
-		data += WriteU32(self.flags)
+		data += WriteUI32(self.flags)
 		data += WriteCString(self.name)
 
 		data += WriteU16(self.minor_version)
@@ -72,25 +72,25 @@ class ABCFile():
 		data += self.constant_pool.pack()
 
 		data += WriteU30(self.method_count)
-		for i in range(self.method_count):
+		for i in xrange(self.method_count):
 			data += self.method[i].pack()
 
 		data += WriteU30(self.metadata_count)
-		for i in range(self.metadata_count):
+		for i in xrange(self.metadata_count):
 			data += self.metadata[i].pack()
 
 		data += WriteU30(self.class_count)
-		for i in range(self.class_count):
+		for i in xrange(self.class_count):
 			data += self.instance[i].pack()
-		for i in range(self.class_count):
+		for i in xrange(self.class_count):
 			data += self.cls[i].pack()
 
 		data += WriteU30(self.script_count)
-		for i in range(self.script_count):
+		for i in xrange(self.script_count):
 			data += self.script[i].pack()
 
 		data += WriteU30(self.method_body_count)
-		for i in range(self.method_body_count):
+		for i in xrange(self.method_body_count):
 			data += self.method_body[i].pack()
 
 		data = WriteTagHeader(self.tagCode, len(data)) + data
@@ -103,46 +103,46 @@ class cpool_info():
 
 		cur, self.int_count = ReadU30(data, cur)
 		self.integer = [0] * self.int_count
-		for i in range(1, self.int_count):
+		for i in xrange(1, self.int_count):
 			cur, val = ReadS32(data, cur)
 			self.integer[i] = val
 
 		cur, self.uint_count = ReadU30(data, cur)
 		self.uinteger = [0] * self.uint_count
-		for i in range(1, self.uint_count):
+		for i in xrange(1, self.uint_count):
 			cur, val = ReadU32(data, cur)
 			self.uinteger[i] = val
 
 		cur, self.double_count = ReadU30(data, cur)
 		self.double = ['NaN'] * self.double_count
-		for i in range(1, self.double_count):
+		for i in xrange(1, self.double_count):
 			cur, val = ReadD64(data, cur)
 			self.double[i] = val
 
 		cur, self.string_count = ReadU30(data, cur)
 		self.string = ['*'] * self.string_count
-		for i in range(1, self.string_count):
+		for i in xrange(1, self.string_count):
 			string = string_info()
 			cur = string.unpack(data, cur)
 			self.string[i] = string
 
 		cur, self.namespace_count = ReadU30(data, cur)
 		self.namespace = ['*'] * self.namespace_count
-		for i in range(1, self.namespace_count):
+		for i in xrange(1, self.namespace_count):
 			namespace = namespace_info()
 			cur = namespace.unpack(data, cur)
 			self.namespace[i] = namespace
 
 		cur, self.ns_set_count = ReadU30(data, cur)
 		self.ns_set = ['*'] * self.ns_set_count
-		for i in range(1, self.ns_set_count):
+		for i in xrange(1, self.ns_set_count):
 			ns_set = ns_set_info()
 			cur = ns_set.unpack(data, cur)
 			self.ns_set[i] = ns_set
 
 		cur, self.multiname_count = ReadU30(data, cur)
 		self.multiname = ['*'] * self.multiname_count
-		for i in range(1, self.multiname_count):
+		for i in xrange(1, self.multiname_count):
 			multiname = multiname_info()
 			cur = multiname.unpack(data, cur)
 			self.multiname[i] = multiname
@@ -153,34 +153,34 @@ class cpool_info():
 		data = ''
 
 		data += WriteU30(self.int_count)
-		for i in range(1, self.int_count):
+		for i in xrange(1, self.int_count):
 			data += WriteS32(self.integer[i])
 
 		data += WriteU30(self.uint_count)
-		for i in range(1, self.uint_count):
-			data += WriteS32(self.uinteger[i])
+		for i in xrange(1, self.uint_count):
+			data += WriteU32(self.uinteger[i])
 		
 		data += WriteU30(self.double_count)
-		for i in range(1, self.double_count):
-			data += WriteS32(self.double[i])
+		for i in xrange(1, self.double_count):
+			data += WriteD64(self.double[i])
 		
 		data += WriteU30(self.string_count)
-		for i in range(1, self.string_count):
+		for i in xrange(1, self.string_count):
 			string = self.string[i]
 			data += string.pack()
 
 		data += WriteU30(self.namespace_count)
-		for i in range(1, self.namespace_count):
+		for i in xrange(1, self.namespace_count):
 			namespace = self.namespace[i]
 			data += namespace.pack()
 			
 		data += WriteU30(self.ns_set_count)
-		for i in range(1, self.ns_set_count):
+		for i in xrange(1, self.ns_set_count):
 			ns_set = self.ns_set[i]
 			data += ns_set.pack()
 		
 		data += WriteU30(self.multiname_count)
-		for i in range(1, self.multiname_count):
+		for i in xrange(1, self.multiname_count):
 			multiname = self.multiname[i]
 			data += multiname.pack()
 
@@ -227,7 +227,7 @@ class ns_set_info():
 	def unpack(self, data, cur):
 		cur, self.count = ReadU30(data, cur)
 		self.ns = []
-		for i in range(self.count):
+		for i in xrange(self.count):
 			cur, ns = ReadU30(data, cur)
 			self.ns.append(ns)
 		return cur
@@ -235,7 +235,7 @@ class ns_set_info():
 	def pack(self):
 		data = ''
 		data += WriteU30(self.count)
-		for i in range(self.count):
+		for i in xrange(self.count):
 			data += WriteU30(self.ns[i])
 		return data
 
@@ -325,7 +325,7 @@ class method_info():
 		cur, self.param_count = ReadU30(data, cur)
 		cur, self.return_type = ReadU30(data, cur)
 		self.param_type = []
-		for i in range(self.param_count):
+		for i in xrange(self.param_count):
 			cur, t = ReadU30(data, cur)
 			self.param_type.append(t)
 
@@ -338,7 +338,7 @@ class method_info():
 
 		if self.flags & 0x80:
 			self.param_names = []
-			for i in range(self.param_count):
+			for i in xrange(self.param_count):
 				cur, name = ReadU30(data, cur)
 				self.param_names.append(name)
 
@@ -348,14 +348,14 @@ class method_info():
 		data = ''
 		data += WriteU30(self.param_count)
 		data += WriteU30(self.return_type)
-		for i in range(self.param_count):
+		for i in xrange(self.param_count):
 			data += WriteU30(self.param_type[i])
 		data += WriteU30(self.name)
 		data += WriteU8(self.flags)
 		if self.flags & 0x08:
 			data += self.options.pack()
 		if self.flags & 0x80:
-			for i in range(self.param_count):
+			for i in xrange(self.param_count):
 				data += WriteU30(self.param_names[i])
 		return data
 
@@ -364,7 +364,7 @@ class option_info():
 	def unpack(self, data, cur):
 		cur, self.option_count = ReadU30(data, cur)
 		self.option = []
-		for i in range(self.option_count):
+		for i in xrange(self.option_count):
 			option = option_detail()
 			cur = option.unpack(data, cur)
 			self.option.append(option)
@@ -373,7 +373,7 @@ class option_info():
 	def pack(self):
 		data = ''
 		data += WriteU30(self.option_count)
-		for i in range(self.option_count):
+		for i in xrange(self.option_count):
 			option = self.option[i]
 			data += option.pack()
 		return data
@@ -415,7 +415,7 @@ class metadata_info():
 		cur, self.name = ReadU30(data, cur)
 		cur, self.item_count = ReadU30(data, cur)
 		self.items = []
-		for i in range(self.item_count):
+		for i in xrange(self.item_count):
 			item = item_info()
 			cur = item.unpack(data, cur)
 			self.items.append(item)
@@ -425,7 +425,7 @@ class metadata_info():
 		data = ''
 		data += WriteU30(self.name)
 		data += WriteU30(self.item_count)
-		for i in range(self.item_count):
+		for i in xrange(self.item_count):
 			data += self.items[i].pack()
 		return data
 
@@ -452,13 +452,13 @@ class instance_info():
 			cur, self.protectedNs = ReadU30(data, cur)
 		cur, self.intrf_count = ReadU30(data, cur)
 		self.interface = []
-		for i in range(self.intrf_count):
+		for i in xrange(self.intrf_count):
 			cur, interface = ReadU30(data, cur)
 			self.interface.append(interface)
 		cur, self.iinit = ReadU30(data, cur)
 		cur, self.trait_count = ReadU30(data, cur)
 		self.trait = []
-		for i in range(self.trait_count):
+		for i in xrange(self.trait_count):
 			trait = traits_info()
 			cur = trait.unpack(data, cur)
 			self.trait.append(trait)
@@ -472,11 +472,11 @@ class instance_info():
 		if self.flags & 0x08:
 			data += WriteU30(self.protectedNs)
 		data += WriteU30(self.intrf_count)
-		for i in range(self.intrf_count):
+		for i in xrange(self.intrf_count):
 			data += WriteU30(self.interface[i])
 		data += WriteU30(self.iinit)
 		data += WriteU30(self.trait_count)
-		for i in range(self.trait_count):
+		for i in xrange(self.trait_count):
 			data += self.trait[i].pack()
 		return data
 
@@ -567,7 +567,7 @@ class traits_info():
 		if self.kind_attr & 0x04:
 			cur, self.metadata_count = ReadU30(data, cur)
 			self.metadata = []
-			for i in range(self.metadata_count):
+			for i in xrange(self.metadata_count):
 				cur, metadata = ReadU30(data, cur)
 				self.metadata.append(metadata)
 
@@ -580,7 +580,7 @@ class traits_info():
 		data += self.data.pack()
 		if self.kind_attr & 0x04:
 			data += WriteU30(self.metadata_count)
-			for i in range(self.metadata_count):
+			for i in xrange(self.metadata_count):
 				data += WriteU30(self.metadata[i])
 		return data
 
@@ -590,7 +590,7 @@ class class_info():
 		cur, self.cinit = ReadU30(data, cur)
 		cur, self.trait_count = ReadU30(data, cur)
 		self.trait = []
-		for i in range(self.trait_count):
+		for i in xrange(self.trait_count):
 			trait = traits_info()
 			cur = trait.unpack(data, cur)
 			self.trait.append(trait)
@@ -600,7 +600,7 @@ class class_info():
 		data = ''
 		data += WriteU30(self.cinit)
 		data += WriteU30(self.trait_count)
-		for i in range(self.trait_count):
+		for i in xrange(self.trait_count):
 			data += self.trait[i].pack()
 		return data
 
@@ -610,7 +610,7 @@ class script_info():
 		cur, self.init = ReadU30(data, cur)
 		cur, self.trait_count = ReadU30(data, cur)
 		self.trait = []
-		for i in range(self.trait_count):
+		for i in xrange(self.trait_count):
 			trait = traits_info()
 			cur = trait.unpack(data, cur)
 			self.trait.append(trait)
@@ -620,7 +620,7 @@ class script_info():
 		data = ''
 		data += WriteU30(self.init)
 		data += WriteU30(self.trait_count)
-		for i in range(self.trait_count):
+		for i in xrange(self.trait_count):
 			data += self.trait[i].pack()
 		return data
 
@@ -640,14 +640,14 @@ class method_body_info():
 
 		cur, self.exception_count = ReadU30(data, cur)
 		self.exception = [] 
-		for i in range(self.exception_count):
+		for i in xrange(self.exception_count):
 			exception = exception_info()
-			cur, exception.unpack(data, cur)
+			cur = exception.unpack(data, cur)
 			self.exception.append(exception)
 
 		cur, self.trait_count = ReadU30(data, cur)
 		self.trait = []
-		for i in range(self.trait_count):
+		for i in xrange(self.trait_count):
 			trait = traits_info()
 			cur = trait.unpack(data, cur)
 			self.trait.append(trait)
@@ -666,11 +666,11 @@ class method_body_info():
 		data += self.code
 
 		data += WriteU30(self.exception_count)
-		for i in range(self.exception_count):
+		for i in xrange(self.exception_count):
 			data += self.exception[i].pack()
 
 		data += WriteU30(self.trait_count)
-		for i in range(self.trait_count):
+		for i in xrange(self.trait_count):
 			data += self.trait[i].pack()
 			
 		return data

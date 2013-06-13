@@ -47,7 +47,7 @@ def ReadConstPool(abc):
 	out += pre + '[\n'
 	pre = 8 * ' '
 	strings = [''] * pool.string_count
-	for i in range(1, pool.string_count):
+	for i in xrange(1, pool.string_count):
 		string = pool.string[i].utf8
 		strings[i] = string
 		out += pre + str(i) + ': ' + string + '\n'
@@ -59,7 +59,7 @@ def ReadConstPool(abc):
 	out += pre + '[\n'
 	pre = 8 * ' '
 	nss = [''] * pool.namespace_count
-	for i in range(1, pool.namespace_count):
+	for i in xrange(1, pool.namespace_count):
 		ns = pool.namespace[i]
 		nss[i] = strings[ns.name]
 		out += pre + str(i) + ': <kind:' + namespace_info.kind_map[ns.kind] 
@@ -73,10 +73,10 @@ def ReadConstPool(abc):
 	out += pre + '[\n'
 	pre = 8 * ' '
 	nssets = [''] * pool.ns_set_count
-	for i in range(1, pool.ns_set_count):
+	for i in xrange(1, pool.ns_set_count):
 		nsset = pool.ns_set[i]
 		nssets[i] = '['
-		for j in range (nsset.count):
+		for j in xrange (nsset.count):
 			nssets[i] += nss[nsset.ns[j]] + ', ' 
 		nssets[i] += ']'
 		out += pre + str(i) + ': <count:' + str(nsset.count)
@@ -89,7 +89,7 @@ def ReadConstPool(abc):
 	out += pre + 'multiname:\n'
 	out += pre + '[\n'
 	pre = 8 * ' '
-	for i in range(1, pool.multiname_count):
+	for i in xrange(1, pool.multiname_count):
 		mn = pool.multiname[i]
 		mndata = mn.data
 		out += pre + str(i) + ': <kind:' + multiname_info.kind_map[mn.kind]
@@ -151,7 +151,7 @@ def GetNsSet(abc, i):
 		return str(nsset)
 
 	out = '['
-	for i in range (nsset.count):
+	for i in xrange (nsset.count):
 		out += GetNamespace(abc, nsset.ns[i]) + ', ' 
 	out += ']'
 	return out
@@ -200,7 +200,7 @@ def ReadMethodInfo(abc):
 
 	out += 'method:\n'
 	out += '[\n'
-	for i in range(abc.method_count):
+	for i in xrange(abc.method_count):
 		method = methods[i]
 		pre = 4 * ' '
 		out += pre + str(i) + ':' + 'method\n'
@@ -211,7 +211,7 @@ def ReadMethodInfo(abc):
 		out += pre + 'param_type:\n'
 		out += pre + '[\n'
 		pre = 12 * ' '
-		for j in range(method.param_count):
+		for j in xrange(method.param_count):
 			out += pre + GetMultiname(abc, method.param_type[j]) + '\n'
 		pre = 8 * ' '
 		out += pre + ']\n'
@@ -221,7 +221,7 @@ def ReadMethodInfo(abc):
 			out += pre + 'options:\n'
 			out += pre + '[\n'
 			pre = 12 * ' '
-			for j in range(options.option_count):
+			for j in xrange(options.option_count):
 				option = options.option[j]
 				out += pre + 'val:' + GetValByType(abc, option.val, option.kind) + ', '
 				out += 'kind:' + option_detail.kind_map[option.kind] + '\n'
@@ -229,7 +229,7 @@ def ReadMethodInfo(abc):
 			out += pre + ']\n'
 		if method.flags & 0x80:
 			out += pre + 'param_names:['
-			for j in range(method.param_count):
+			for j in xrange(method.param_count):
 				out += GetString(abc, method.param_names[j]) + ', '
 			out += ']\n'
 		out += '\n'
@@ -245,7 +245,7 @@ def ReadMetadataInfo(abc):
 
 	out += 'metadata:\n'
 	out += '[\n'
-	for i in range(abc.metadata_count):
+	for i in xrange(abc.metadata_count):
 		meta = metas[i]
 		pre = 4 * ' '
 		out += pre + str(i) + ':' + GetString(abc, meta.name) + '\n'
@@ -254,7 +254,7 @@ def ReadMetadataInfo(abc):
 		out += pre + 'item_info:\n'
 		out += pre + '[\n'
 		pre = 12 * ' '
-		for j in range(meta.item_count):
+		for j in xrange(meta.item_count):
 			item = meta.items[j]
 			out += pre + 'key:' + GetString(abc, item.key) + ', '
 			out += 'value:' + GetString(abc, item.value) + '\n'
@@ -270,7 +270,7 @@ def ReadTraits(abc, trait_count, traits, indent):
 	out += pre + 'trait_count: ' + str(trait_count) + '\n'
 	out += pre + 'trait:\n'
 	out += pre + '[\n'
-	for j in range(trait_count):
+	for j in xrange(trait_count):
 		pre = (indent + 4) * ' '
 		trait = traits[j]
 		out += pre + 'name:' + GetMultiname(abc, trait.name) + '\n'
@@ -298,7 +298,7 @@ def ReadTraits(abc, trait_count, traits, indent):
 		if trait.kind_attr & 0x04:
 			out += pre + 'metadata_count:' + str(trait.metadata_count) + '\n'
 			out += pre + 'metadata:['
-			for k in range(trait.metadata_count):
+			for k in xrange(trait.metadata_count):
 				out += str(trait.metadata[k]) + ', '
 			out +=  ']\n'
 	pre = indent * ' '
@@ -314,7 +314,7 @@ def ReadInstanceInfo(abc):
 
 	out += 'instance:\n'
 	out += '[\n'
-	for i in range(abc.class_count):
+	for i in xrange(abc.class_count):
 		inst = insts[i]
 		pre = 4 * ' '
 		out += pre + str(i) + ':' + GetMultiname(abc, inst.name) + '\n'
@@ -328,7 +328,7 @@ def ReadInstanceInfo(abc):
 		out += pre + 'interface:\n'
 		out += pre + '[\n'
 		pre = 12 * ' '
-		for j in range(inst.intrf_count):
+		for j in xrange(inst.intrf_count):
 			out += pre + GetMultiname(abc, inst.interface[j]) + '\n'
 		pre = 8 * ' '
 		out += pre + ']\n'
@@ -349,7 +349,7 @@ def ReadClassInfo(abc):
 
 	out += 'class:\n'
 	out += '[\n'
-	for i in range(abc.class_count):
+	for i in xrange(abc.class_count):
 		cls = clss[i]
 		pre = 4 * ' '
 		out += pre + str(i) + ':class\n'
@@ -369,7 +369,7 @@ def ReadScriptInfo(abc):
 
 	out += 'script:\n'
 	out += '[\n'
-	for i in range(abc.script_count):
+	for i in xrange(abc.script_count):
 		script = scripts[i]
 		pre = 4 * ' '
 		out += pre + str(i) + ':script\n'
@@ -388,7 +388,7 @@ def ReadMethodBodyInfo(abc):
 
 	out += 'method_body:\n'
 	out += '[\n'
-	for i in range(abc.method_body_count):
+	for i in xrange(abc.method_body_count):
 		body = bodies[i]
 		pre = 4 * ' '
 		out += pre + str(i) + ':method_body\n'

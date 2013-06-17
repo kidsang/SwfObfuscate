@@ -252,6 +252,7 @@ class multiname_info():
 		0x0E:'MultinameA',
 		0x1B:'MultinameL',
 		0x1C:'MultinameLA',
+		0x1D:'GenericName',
 	}
 
 	class QName():
@@ -296,6 +297,23 @@ class multiname_info():
 		def pack(self):
 			return WriteU30(self.ns_set)
 
+	class GenericName():
+		def unpack(self, data, cur):
+			cur, self.type_def = ReadU30(data, cur)
+			cur, self.param_count = ReadU30(data, cur)
+			self.param = []
+			for i in xrange(self.param_count):
+				cur, param = ReadU30(data, cur)
+				self.param.append(param)
+			return cur
+		def pack(self):
+			data = ''
+			data += WriteU30(self.type_def)
+			data += WriteU30(self.param_count)
+			for i in xrange(self.param_count):
+				data += WriteU30(self.param[i])
+			return data
+
 	def unpack(self, data, cur):
 		cur, self.kind = ReadU8(data, cur)
 
@@ -309,6 +327,8 @@ class multiname_info():
 			self.data = self.Multiname()
 		elif self.kind in (0x1B, 0x1C):
 			self.data = self.MultinameL()
+		elif self.kind in (0x1D,):
+			self.data = self.GenericName()
 
 		cur = self.data.unpack(data, cur)
 		return cur

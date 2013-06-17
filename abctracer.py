@@ -111,6 +111,12 @@ def ReadConstPool(abc):
 		elif mn.kind in (0x1B, 0x1C):
 			out += ', ns_set:' + nssets[mndata.ns_set]
 			out += ', ns_set:' + str(mndata.ns_set)
+		elif mn.kind in (0x1D,):
+			out += ', type_def:' + str(mndata.type_def)
+			out += ', params:['
+			for i in xrange(mndata.param_count):
+				out += GetMultiname(abc, mndata.param[i]) + ', '
+			out += ']'
 		out += '>\n'
 
 	pre = 4 * ' '
@@ -175,6 +181,12 @@ def GetMultiname(abc, i):
 		out += ', ns_set:' + GetNsSet(abc, mndata.ns_set)
 	elif mn.kind in (0x1B, 0x1C):
 		out += 'ns_set:' + GetNsSet(abc, mndata.ns_set)
+	elif mn.kind in (0x1D,):
+		out += 'type_def:' + str(mndata.type_def)
+		out += ', params:['
+		for i in xrange(mndata.param_count):
+			out += GetMultiname(abc, mndata.param[i]) + ', '
+		out += ']'
 	out += ', kind:' + multiname_info.kind_map[mn.kind] + '>'
 	return out
 

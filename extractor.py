@@ -1,4 +1,5 @@
 import json
+from abcutils import *
 from abcfile import *
 
 class Extractor():
@@ -56,15 +57,17 @@ class Extractor():
 					self.extractFunction(abc, trait, rule, cls)
 
 	def extractClass(self, abc, instance, rule):
-		clsName, nsi = self.extractMultiname(abc, instance.name)
-		pkgName, visibility = self.extractNamespace(abc, nsi)
+		clsName, nsi = extractMultiname(abc, instance.name)
+		pkgName, visibility = extractNamespace(abc, nsi)
 
 		pkg = None
 		if pkgName in self.pkgs:
 			pkg = self.pkgs[pkgName]
 		else:
-			pkg = {'name':pkgName, 'classes':{}}
+			pkg = {'name':pkgName, 'classes':{}, 'obfuscate':True}
 			self.pkgs[pkgName] = pkg
+		if not rule['package']:
+			pkg['obfuscate'] = False
 
 		clss = pkg['classes']
 		if clsName in clss:
@@ -73,8 +76,8 @@ class Extractor():
 		superName = None
 		superPkgName = None
 		if instance.super_name != 0:
-			superName, nsi = self.extractMultiname(abc, instance.super_name)
-			superPkgName, _ = self.extractNamespace(abc, nsi)
+			superName, nsi = extractMultiname(abc, instance.super_name)
+			superPkgName, _ = extractNamespace(abc, nsi)
 
 		obfuscate = rule[visibility + '_class']
 
@@ -91,8 +94,8 @@ class Extractor():
 		return cls
 
 	def extractFunction(self, abc, trait, rule, cls):
-		funcName, nsi = self.extractMultiname(abc, trait.name)
-		_, visibility = self.extractNamespace(abc, nsi)
+		funcName, nsi = extractMultiname(abc, trait.name)
+		_, visibility = extractNamespace(abc, nsi)
 		obfuscate = rule[visibility + '_function']
 
 		func = {
@@ -105,8 +108,8 @@ class Extractor():
 		funcs[funcName] = func
 
 	def extractProperty(self, abc, trait, rule, cls):
-		propName, nsi = self.extractMultiname(abc, trait.name)
-		_, visibility = self.extractNamespace(abc, nsi)
+		propName, nsi = extractMultiname(abc, trait.name)
+		_, visibility = extractNamespace(abc, nsi)
 		obfuscate = rule[visibility + '_property']
 
 		prop = {
@@ -117,24 +120,3 @@ class Extractor():
 
 		props = cls['properties']
 		props[propName] = prop
-
-	def extractMultiname(self, abc, mni):
-		pool = abc.constant_pool
-		mn = pool.multiname[mni]
-		data = mn.data
-		name = pool.string[data.name].utf8
-		nsi = data.ns
-		return name, nsi
-
-	def extractNamespace(self, abc, nsi):
-		pool = abc.constant_pool
-		ns = pool.namespace[nsi]
-		name = pool.string[ns.name].utf8
-		visibility = None
-		if ns.kind in (0x8, 0x16, 0x17):
-			visibility = 'public'
-		elif ns.kind == 0x18:
-			visibility = 'protected'
-		elif ns.kind == 0x05:
-			visibility = 'private'
-		return name, visibility

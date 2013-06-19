@@ -19,6 +19,9 @@ def ReadU16(data, cur):
 	val = struct.unpack('<H', data[cur:next])[0]
 	return next, val
 
+def ReadUI16(data, cur):
+	return ReadU16(data, cur)
+
 def ReadS24(data, cur):
 	'''
 	Three-byte signed integer value
@@ -127,6 +130,9 @@ def WriteU16(val):
 	Two-byte unsigned integer value
 	'''
 	return struct.pack('<H', val)
+
+def WriteUI16(val):
+	return WriteU16(val)
 
 def WriteS24(val):
 	'''

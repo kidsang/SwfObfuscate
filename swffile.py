@@ -1,6 +1,7 @@
 import zlib
 from prime import *
 from abcfile import ABCFile
+from symclsfile import SymbolClassFile
 
 class SWFFile():
 
@@ -15,11 +16,12 @@ class SWFFile():
 
 		cur = 0
 		cur, self.frame_size = ReadRect(data, cur)
-		cur, self.frame_rate = ReadU16(data, cur)
-		cur, self.frame_count = ReadU16(data, cur)
+		cur, self.frame_rate = ReadUI16(data, cur)
+		cur, self.frame_count = ReadUI16(data, cur)
 
 		self.trunks = []
 		self.abcIndices = []
+		self.symclsIndices = []
 		totalLen = len(data)
 		i = 0
 		while cur < totalLen:
@@ -31,6 +33,11 @@ class SWFFile():
 				abcFile.unpack(data[begin:end], 0)
 				self.trunks.append(abcFile)
 				self.abcIndices.append(i)
+			elif tagCode == 76: # Symbol Class
+				symclsFile = SymbolClassFile()
+				symclsFile.unpack(data[begin:end], 0)
+				self.trunks.append(symclsFile)
+				self.symclsIndices.append(i)
 			else:
 				self.trunks.append(data[begin:end])
 			cur = end
@@ -39,8 +46,8 @@ class SWFFile():
 	def pack(self):
 		data = ''
 		data += WriteRect(self.frame_size)
-		data += WriteU16(self.frame_rate)
-		data += WriteU16(self.frame_count)
+		data += WriteUI16(self.frame_rate)
+		data += WriteUI16(self.frame_count)
 
 		for i in xrange(len(self.trunks)):
 			trunk = self.trunks[i]
@@ -63,3 +70,6 @@ class SWFFile():
 
 	def abcFiles(self):
 		return [self.trunks[i] for i in self.abcIndices]
+
+	def symclsFiles(self):
+		return [self.trunks[i] for i in self.symclsIndices]

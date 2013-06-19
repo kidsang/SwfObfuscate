@@ -13,6 +13,11 @@ class Extractor():
 		else:
 			return json.dumps(self.pkgs)
 
+	def exportToFile(self, fileName):
+		f = open(fileName, 'w')
+		f.write(self.getJson())
+		f.close()
+
 	def loadRules(self, ruleFilePath):
 		f = open(ruleFilePath, 'r')
 		jsonStr = f.read()
@@ -44,10 +49,10 @@ class Extractor():
 			cls = self.extractClass(abc, instance, rule)
 			traits = instance.trait
 			for trait in traits:
-				kind = traits_info.kind_map[trait.kind_kind]
-				if kind == 'Slot':
+				kind = trait.kind_kind
+				if kind == 0:
 					self.extractProperty(abc, trait, rule, cls)
-				elif kind in ('Getter', 'Setter', 'Function', 'Method'):
+				elif kind in (1, 2, 3, 5):
 					self.extractFunction(abc, trait, rule, cls)
 
 	def extractClass(self, abc, instance, rule):

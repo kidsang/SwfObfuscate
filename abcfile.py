@@ -505,7 +505,7 @@ class traits_info():
 	kind_map = {
 		0:'Slot', 
 		1:'Method', 
-		2:'Readter', 
+		2:'Getter', 
 		3:'Setter', 
 		4:'Class', 
 		5:'Function', 

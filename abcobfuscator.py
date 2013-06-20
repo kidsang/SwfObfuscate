@@ -160,18 +160,7 @@ class ABCObfuscator():
 					replace = self.pri_rep_map[origin]
 					string[i].utf8 = replace
 					string[i].size = len(replace)
-					print origin, ':', replace
-
-
-	def obfuscateInstance(self, abc, instance):
-		cls = self.obfuscateClass(abc, instance, rule)
-		traits = instance.trait
-		for trait in traits:
-			kind = trait.kind_kind
-			if kind == 0:
-				self.obfuscateProperty(abc, trait, rule, cls)
-			elif kind in (1, 2, 3, 5):
-				self.obfuscateFunction(abc, trait, rule, cls)
+					# print origin, ':', replace
 
 	def processSymbolClass(self, symcls):
 		for i in xrange(symcls.num_symbols):

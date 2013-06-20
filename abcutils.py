@@ -3,8 +3,13 @@ def extractMultiname(abc, mni):
 	pool = abc.constant_pool
 	mn = pool.multiname[mni]
 	data = mn.data
-	name = pool.string[data.name].utf8
-	nsi = data.ns
+	name = '*'
+	nsi = 0
+	if mn.kind == 0x1D:
+		name, nsi = extractMultiname(abc, data.type_def)
+	else:
+		name = pool.string[data.name].utf8
+		nsi = data.ns
 	return name, nsi
 
 def extractNamespace(abc, nsi):

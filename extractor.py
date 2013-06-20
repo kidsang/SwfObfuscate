@@ -97,10 +97,18 @@ class Extractor():
 		funcName, nsi = extractMultiname(abc, trait.name)
 		_, visibility = extractNamespace(abc, nsi)
 		obfuscate = rule[visibility + '_function']
+		method = abc.method[trait.data.method]
+		typeName = '*'
+		typePkg = '*'
+		if method.return_type != 0:
+			typeName, nsi = extractMultiname(abc, method.return_type)
+			typePkg, _ = extractNamespace(abc, nsi)
 
 		func = {
 			'name':funcName,
 			'visibility':visibility,
+			'type_name':typeName,
+			'type_pkg':typePkg,
 			'obfuscate':obfuscate
 		}
 
@@ -112,9 +120,17 @@ class Extractor():
 		_, visibility = extractNamespace(abc, nsi)
 		obfuscate = rule[visibility + '_property']
 
+		typeName = '*'
+		typePkg = '*'
+		if trait.data.type_name != 0:
+			typeName, nsi = extractMultiname(abc, trait.data.type_name)
+			typePkg, _ = extractNamespace(abc, nsi)
+
 		prop = {
 			'name':propName,
 			'visibility':visibility,
+			'type_name':typeName,
+			'type_pkg':typePkg,
 			'obfuscate':obfuscate
 		}
 

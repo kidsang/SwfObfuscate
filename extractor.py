@@ -46,15 +46,22 @@ class Extractor():
 
 	def extractInstances(self, abc, rule):
 		instances = abc.instance
-		for instance in instances:
-			cls = self.extractClass(abc, instance, rule)
-			traits = instance.trait
-			for trait in traits:
+		for i in xrange(abc.class_count):
+			instance = abc.instance[i]
+			clsinfo = self.extractClass(abc, instance, rule)
+			for trait in instance.trait:
 				kind = trait.kind_kind
-				if kind == 0:
-					self.extractProperty(abc, trait, rule, cls)
-				elif kind in (1, 2, 3, 5):
-					self.extractFunction(abc, trait, rule, cls)
+				if kind in (0, 6):
+					self.extractProperty(abc, trait, rule, clsinfo)
+				elif kind in (1, 2, 3):
+					self.extractFunction(abc, trait, rule, clsinfo)
+			cls = abc.cls[i]
+			for trait in cls.trait:
+				kind = trait.kind_kind
+				if kind in (0, 6):
+					self.extractProperty(abc, trait, rule, clsinfo)
+				elif kind in (1, 2, 3):
+					self.extractFunction(abc, trait, rule, clsinfo)
 
 	def extractClass(self, abc, instance, rule):
 		clsName, nsi = extractMultiname(abc, instance.name)

@@ -17,7 +17,7 @@ def extractNamespace(abc, nsi):
 	ns = pool.namespace[nsi]
 	name = pool.string[ns.name].utf8
 	visibility = None
-	if ns.kind in (0x8, 0x16, 0x17):
+	if ns.kind in (0x8, 0x16, 0x17, 0x1A):
 		visibility = 'public'
 	elif ns.kind == 0x18:
 		visibility = 'protected'
